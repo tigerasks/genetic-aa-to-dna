@@ -1,0 +1,19 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+.candidate {
+  display: flex;
+  flex-direction: column;
+  width: 100%
+}
+.dna-sequence{
+  color: grey;
+  font-size: 0.5em;
+  overflow-wrap: anywhere;
+}
+.aa-sequence{
+  color: black;
+  overflow-wrap: anywhere;
+}
