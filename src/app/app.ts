@@ -70,7 +70,17 @@ export class App {
       throw new Error('No candidates found')
     }
 
-    const fitness = currentCandidates.map(this.calculateFitness.bind(this))
+    const [bestCandidateIndex, fitness, totalFitnessWeight] = this.evaluateCandidates(currentCandidates)
+    this.currentEpsilon.set(fitness[bestCandidateIndex])
+
+    return Array.from(
+      { length: this.geneticAlgorithmConfig.populationSize },
+      () => this.sequenceRandomiser.randomTranslatableDna() //TODO: breed new generation by mating previous
+    )
+  }
+
+  private evaluateCandidates(candidates: readonly Candidate[]): [number, number[], number]{
+    const fitness = candidates.map(this.calculateFitness.bind(this))
     let bestCandidateIndex = -1
     let bestFitness = -1
     let totalWeight = 0
@@ -83,12 +93,7 @@ export class App {
       }
     })
 
-    this.currentEpsilon.set(bestFitness)
-
-    return Array.from(
-      { length: this.geneticAlgorithmConfig.populationSize },
-      () => this.sequenceRandomiser.randomTranslatableDna() //TODO: breed new generation by mating previous
-    )
+    return [bestCandidateIndex, fitness, totalWeight]
   }
 
   private calculateFitness(candidate: Candidate): number{
