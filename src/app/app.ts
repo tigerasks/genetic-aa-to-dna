@@ -34,28 +34,32 @@ export class App {
     this.isAbortRequested = true
   }
 
-  protected async startIteration(){
-    if(this.targetAaSequence() === ''){
+  protected startIteration() {
+    if (this.targetAaSequence() === '') {
       throw new Error('Iteration on empty target is pointless.')
     }
-    const waitForNextFrame = () => new Promise(resolve => requestAnimationFrame(resolve))
 
     this.isRunning.set(true)
     this.initialisePopulation()
 
-    const isComputationOngoing = (i: number) =>
-      !this.isAbortRequested
-      && i < this.geneticAlgorithmConfig.maxGenerationSafeguard
-      && this.currentEpsilon() < this.geneticAlgorithmConfig.minEpsilon
+    setTimeout(() => this.doIterate(), 0) //allow candidates to be created
+  }
+    private async doIterate() {
+      const waitForNextFrame = () => new Promise(resolve => requestAnimationFrame(resolve))
 
-    for(let i = 2; isComputationOngoing(i); ++i){
-      this.currentGenerationNumber.set(i)
-      this.currentPopulationSequences.set(this.breedNextGeneration())
-      await waitForNextFrame()
-    }
+      const isComputationOngoing = (i: number) =>
+        !this.isAbortRequested
+        && i < this.geneticAlgorithmConfig.maxGenerationSafeguard
+        && this.currentEpsilon() < this.geneticAlgorithmConfig.minEpsilon
 
-    this.isRunning.set(false)
-    this.isAbortRequested = false
+      for(let i = 2; isComputationOngoing(i); ++i){
+        this.currentGenerationNumber.set(i)
+        this.currentPopulationSequences.set(this.breedNextGeneration())
+        await waitForNextFrame()
+      }
+
+      this.isRunning.set(false)
+      this.isAbortRequested = false
   }
 
   private initialisePopulation(){
