@@ -50,6 +50,8 @@ export class App {
     private async doIterate() {
       const waitForNextFrame = () => new Promise(resolve => requestAnimationFrame(resolve))
 
+      this.currentEpsilon.set(0)
+
       const isComputationOngoing = (i: number) =>
         !this.isAbortRequested
         && i < this.geneticAlgorithmConfig.maxGenerationSafeguard
@@ -82,9 +84,8 @@ export class App {
       throw new Error(`Insufficient candidates found: ${currentCandidates?.length}`)
     }
 
-    const [bestCandidateIndex, fitness] = this.evaluateCandidates(currentCandidates)
-    this.currentEpsilon.set(fitness[bestCandidateIndex])
-
+    const [bestCandidateIndex, fitness, epsilon] = this.evaluateCandidates(currentCandidates)
+    this.currentEpsilon.set(epsilon)
     this.bestCandidate.set(currentCandidates[bestCandidateIndex])
 
     return Array.from(
@@ -96,11 +97,12 @@ export class App {
     )
   }
 
-  private evaluateCandidates(candidates: readonly Candidate[]): [number, number[]]{
+  private evaluateCandidates(candidates: readonly Candidate[]): [number, number[], number]{
     const targetSequence = this.targetAaSequence()
 
     let bestCandidateIndex = -1
     let bestCandidateScore = -1
+    let bestPercentage = 0
     let sumOfScores = 0
     const scores = candidates.map((candidate, i) => {
       const candidateSequence = candidate.aa()
@@ -112,13 +114,14 @@ export class App {
       if(bestCandidateScore < score){
         bestCandidateScore = score
         bestCandidateIndex = i
+        bestPercentage = numberOfCorrectSymbols / targetSequence.length
       }
 
       return score
     })
     const fitness = scores.map((ithScore) => ithScore / sumOfScores)
 
-    return [bestCandidateIndex, fitness]
+    return [bestCandidateIndex, fitness, bestPercentage]
   }
 
   private countNumberOfMatches(targetSequence: string, candidateSequence: string) {
@@ -171,6 +174,14 @@ export class App {
     const validSymbols = "ACTG"
 
     const resultSymbols: string[] = []
+    // for(let i = 2; i < dna.length; i += 3){
+    //   if(Math.random() <= mutationRate){
+    //     resultSymbols.push(this.sequenceRandomiser.randomTranslatableDna())
+    //   } else {
+    //     const originalTriplet = [dna[i-2], dna[i-1], dna[i]].join('')
+    //     resultSymbols.push(originalTriplet)
+    //   }
+    // }
 
     for(const original of dna){
       if(Math.random() <= mutationRate){
