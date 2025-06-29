@@ -1,11 +1,20 @@
-<input
-  class="target-aa"
-  type="text"
-  [(ngModel)]="targetAaSequence"
-  placeholder="Enter target AA sequence"
-/>
-@if (isComputationRunning()) {
-  <button class="stop" (click)="stop()">Stop at current Generation</button>
-} @else {
-  <button class="start" (click)="start()">Generate Candidates</button>
-}
+<div class="action-bar">
+  <input
+    class="target-aa"
+    type="text"
+    [(ngModel)]="targetAaSequence"
+    placeholder="Enter target AA sequence"
+  />
+  @if (isComputationRunning()) {
+    <button class="stop" (click)="stop()">Stop</button>
+  } @else {
+    <button class="start" (click)="start()">Translate</button>
+  }
+  <button
+    class="random"
+    (click)="translateRandomDna()"
+    [disabled]="isComputationRunning()"
+  >
+    Random
+  </button>
+</div>

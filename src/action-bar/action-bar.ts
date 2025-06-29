@@ -1,5 +1,6 @@
 import {Component, effect, input, output, signal} from '@angular/core';
 import {FormsModule} from '@angular/forms';
+import {SequenceRandomiser} from '../sequence-handling/sequence-randomiser';
 
 @Component({
   selector: 'app-action-bar',
@@ -17,7 +18,9 @@ export class ActionBar {
   onStop = output()
   onTargetSequenceChanged = output<string>()
 
-  constructor() {
+  constructor(
+    private sequenceRandomiser: SequenceRandomiser
+  ) {
     let lastTargetAaSequence: string
     effect(() => {
       const currentTargetAaSequence = this.targetAaSequence()
@@ -33,5 +36,10 @@ export class ActionBar {
   }
   protected stop(){
     this.onStop.emit()
+  }
+
+  protected translateRandomDna(){
+    this.targetAaSequence.set(this.sequenceRandomiser.randomAaSequence())
+    this.onStart.emit()
   }
 }
