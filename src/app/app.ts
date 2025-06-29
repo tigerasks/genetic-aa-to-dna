@@ -1,4 +1,4 @@
-import {Component, computed, input, QueryList, signal, ViewChildren} from '@angular/core';
+import {Component, computed, input, QueryList, signal, viewChild, ViewChildren} from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import {Candidate} from '../candidate/candidate';
 import {SequenceRandomiser} from '../sequence-handling/sequence-randomiser';
@@ -15,12 +15,14 @@ import {ActionBar} from '../action-bar/action-bar';
 export class App {
   protected isRunning = signal<boolean>(false)
   protected currentGenerationNumber = signal<number>(1)
-  protected currentPopulation = signal<string[]>([])
+  protected currentPopulationSequences = signal<string[]>([])
 
   protected targetAaSequence = signal<string>('')
-  private currentEpsilon = computed<number>(() => 0.0)
+  private currentEpsilon = signal<number>(0.0)
 
   private isAbortRequested = false
+
+  private population = viewChild(PopulationDisplay)
 
   constructor(
     private geneticAlgorithmConfig: GeneticAlgorithmConfig,
@@ -44,7 +46,7 @@ export class App {
 
     for(let i = 2; isComputationOngoing(i); ++i){
       this.currentGenerationNumber.set(i)
-      this.currentPopulation.set(this.breedNextGeneration())
+      this.currentPopulationSequences.set(this.breedNextGeneration())
       await waitForNextFrame()
     }
 
@@ -53,7 +55,7 @@ export class App {
   }
 
   private initialisePopulation(){
-    this.currentPopulation.set(
+    this.currentPopulationSequences.set(
       Array.from(
         { length: this.geneticAlgorithmConfig.populationSize },
         () => this.sequenceRandomiser.randomTranslatableDna()
@@ -63,11 +65,53 @@ export class App {
   }
 
   private breedNextGeneration(): string[]{
-    //TODO
+    const currentCandidates = this.population()?.candidates()
+    if(!currentCandidates){
+      throw new Error('No candidates found')
+    }
+
+    const fitness = currentCandidates.map(this.calculateFitness.bind(this))
+    let bestCandidateIndex = -1
+    let bestFitness = -1
+    let totalWeight = 0
+    fitness.forEach((fitness, i) => {
+      totalWeight += fitness
+
+      if(fitness > bestFitness){
+        bestFitness = fitness
+        bestCandidateIndex = i
+      }
+    })
+
+    this.currentEpsilon.set(bestFitness)
+
     return Array.from(
       { length: this.geneticAlgorithmConfig.populationSize },
-      () => this.sequenceRandomiser.randomTranslatableDna()
+      () => this.sequenceRandomiser.randomTranslatableDna() //TODO: breed new generation by mating previous
     )
   }
 
+  private calculateFitness(candidate: Candidate): number{
+    const targetSequence = this.targetAaSequence()
+    const candidateSequence = candidate.aa()
+
+    let numberOfCorrectSymbols = this.countNumberOfMatches(targetSequence, candidateSequence);
+
+    return (numberOfCorrectSymbols / targetSequence.length) ** 2
+  }
+
+  private countNumberOfMatches(targetSequence: string, candidateSequence: string) {
+
+    if(targetSequence.length !== candidateSequence.length){
+      throw new Error(`Candidate sequence length ${candidateSequence.length} does not match target sequence length ${targetSequence.length}`)
+    }
+
+    let numberOfCorrectSymbols = 0
+    for (let i = 0; i < targetSequence.length; ++i) {
+      if (candidateSequence.at(i) === targetSequence.at(i)) {
+        ++numberOfCorrectSymbols
+      }
+    }
+    return numberOfCorrectSymbols
+  }
 }
