@@ -8,7 +8,13 @@
   @if (isComputationRunning()) {
     <button class="stop" (click)="stop()">Stop</button>
   } @else {
-    <button class="start" (click)="start()">Translate</button>
+    <button
+      class="start"
+      (click)="start()"
+      [disabled]="targetAaSequence() === ''"
+    >
+      Translate
+    </button>
   }
   <button
     class="random"

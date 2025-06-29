@@ -3,7 +3,6 @@
   align-items: center;
   gap: 1rem;
   padding: 1rem;
-  margin-bottom: 2rem;
 }
 
 .target-aa {
@@ -37,7 +36,7 @@ button {
   border-color: #007bff;
 }
 
-.start:hover {
+.start:hover:not(:disabled) {
   background: #0056b3;
   border-color: #0056b3;
 }
@@ -65,7 +64,7 @@ button {
   background: #f8f9fa;
 }
 
-.random:disabled {
+button:disabled {
   background: #e9ecef;
   color: #6c757d;
   cursor: not-allowed;
