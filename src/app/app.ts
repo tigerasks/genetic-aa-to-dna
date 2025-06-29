@@ -73,9 +73,14 @@ export class App {
     const [bestCandidateIndex, fitness, totalFitnessWeight] = this.evaluateCandidates(currentCandidates)
     this.currentEpsilon.set(fitness[bestCandidateIndex])
 
+    //TODO: display best candidate
+
     return Array.from(
       { length: this.geneticAlgorithmConfig.populationSize },
-      () => this.sequenceRandomiser.randomTranslatableDna() //TODO: breed new generation by mating previous
+      () => {
+        const [a, b] = this.weightedPick(2, fitness, totalFitnessWeight)
+        return this.mate(currentCandidates[a], currentCandidates[b])
+      }
     )
   }
 
@@ -118,5 +123,25 @@ export class App {
       }
     }
     return numberOfCorrectSymbols
+  }
+
+  private weightedPick(numberOfPicks: number, weights: number[], totalWeight: number): number[]{
+    return Array.from(
+      {length: numberOfPicks},
+      () => {
+        let target = Math.floor(Math.random() * totalWeight)
+        for(let i = 0; i < weights.length; ++i){
+          target -= weights[i]
+          if(target <= 0){
+            return i
+          }
+        }
+        throw new Error(`weighted pick failed unexpectedly for weights ${weights}`)
+      }
+    )
+  }
+
+  private mate(parentA: Candidate, parentB: Candidate): string {
+    return this.sequenceRandomiser.randomTranslatableDna() //TODO
   }
 }
