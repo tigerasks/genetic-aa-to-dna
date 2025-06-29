@@ -1,0 +1,73 @@
+.action-bar {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  margin-bottom: 2rem;
+}
+
+.target-aa {
+  flex: 1;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.target-aa:focus {
+  outline: none;
+  border-color: #007bff;
+}
+
+/* Base button styles */
+button {
+  padding: 0.5rem 1rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+  background: white;
+  color: #333;
+}
+
+/* Start button */
+.start {
+  background: #007bff;
+  color: white;
+  border-color: #007bff;
+}
+
+.start:hover {
+  background: #0056b3;
+  border-color: #0056b3;
+}
+
+/* Stop button */
+.stop {
+  background: #dc3545;
+  color: white;
+  border-color: #dc3545;
+}
+
+.stop:hover {
+  background: #c82333;
+  border-color: #c82333;
+}
+
+/* Random button */
+.random {
+  background: white;
+  color: #333;
+  border-color: #ddd;
+}
+
+.random:hover:not(:disabled) {
+  background: #f8f9fa;
+}
+
+.random:disabled {
+  background: #e9ecef;
+  color: #6c757d;
+  cursor: not-allowed;
+  border-color: #e9ecef;
+}
