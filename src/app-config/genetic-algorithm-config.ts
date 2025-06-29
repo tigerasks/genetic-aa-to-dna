@@ -5,4 +5,5 @@ export class GeneticAlgorithmConfig{
   readonly populationSize: number = 200
   readonly maxGenerationSafeguard = 10_000
   readonly minEpsilon = 1
+  readonly mutationRate = 0.01
 }

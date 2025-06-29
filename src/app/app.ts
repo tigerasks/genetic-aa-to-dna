@@ -6,6 +6,7 @@ import {GeneticAlgorithmConfig} from '../app-config/genetic-algorithm-config';
 import {PopulationDisplay} from '../population-display/population-display';
 import {ActionBar} from '../action-bar/action-bar';
 import {BestCandidate} from '../best-candidate/best-candidate';
+import {appConfig} from './app.config';
 
 @Component({
   selector: 'app-root',
@@ -55,6 +56,7 @@ export class App {
         && this.currentEpsilon() < this.geneticAlgorithmConfig.minEpsilon
 
       for(let i = 2; isComputationOngoing(i); ++i){
+        console.log(`generation ${this.currentGenerationNumber()}: epsilon = ${this.currentEpsilon()}`)
         this.currentGenerationNumber.set(i)
         this.currentPopulationSequences.set(this.breedNextGeneration())
         await waitForNextFrame()
@@ -161,8 +163,25 @@ export class App {
     const midpoint = Math.floor(Math.random() * dnaA.length)
     const childSequence = dnaA.substring(0, midpoint) + dnaB.substring(midpoint)
 
-    //TODO: mutate
+    return this.mutateDnaSequence(childSequence)
+  }
 
-    return childSequence
+  private mutateDnaSequence(dna: string): string {
+    const mutationRate = this.geneticAlgorithmConfig.mutationRate
+    const validSymbols = "ACTG"
+
+    const resultSymbols: string[] = []
+
+    for(const original of dna){
+      if(Math.random() <= mutationRate){
+        const randomSymbol = validSymbols[Math.floor(Math.random() * validSymbols.length)]
+        resultSymbols.push(randomSymbol)
+      } else {
+        resultSymbols.push(original)
+      }
+    }
+
+
+    return resultSymbols.join('')
   }
 }
