@@ -17,6 +17,7 @@ export class App {
   protected currentGenerationNumber = signal<number>(1)
   protected currentPopulation = signal<string[]>([])
 
+  protected targetAaSequence = signal<string>('')
   private currentEpsilon = computed<number>(() => 0.0)
 
   private isAbortRequested = false

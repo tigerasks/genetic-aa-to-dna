@@ -1,5 +1,11 @@
+<input
+  class="target-aa"
+  type="text"
+  [(ngModel)]="targetAaSequence"
+  placeholder="Enter target AA sequence"
+/>
 @if (isComputationRunning()) {
-  <button (click)="stop()">Stop at current Generation</button>
+  <button class="stop" (click)="stop()">Stop at current Generation</button>
 } @else {
-  <button (click)="start()">Generate Candidates</button>
+  <button class="start" (click)="start()">Generate Candidates</button>
 }

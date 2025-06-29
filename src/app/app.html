@@ -4,6 +4,7 @@
       [isComputationRunning]="isRunning()"
       (onStart)="startIteration()"
       (onStop)="stopIteration()"
+      (onTargetSequenceChanged)="targetAaSequence.set($event)"
     />
     <app-population-display [populationSequences]="currentPopulation()"/>
   </div>
