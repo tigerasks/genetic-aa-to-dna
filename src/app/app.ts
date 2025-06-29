@@ -78,7 +78,7 @@ export class App {
       throw new Error(`Insufficient candidates found: ${currentCandidates?.length}`)
     }
 
-    const [bestCandidateIndex, fitness, totalFitnessWeight] = this.evaluateCandidates(currentCandidates)
+    const [bestCandidateIndex, fitness] = this.evaluateCandidates(currentCandidates)
     this.currentEpsilon.set(fitness[bestCandidateIndex])
 
     //TODO: display best candidate
@@ -86,36 +86,35 @@ export class App {
     return Array.from(
       { length: this.geneticAlgorithmConfig.populationSize },
       () => {
-        const [a, b] = this.weightedPick(2, fitness, totalFitnessWeight)
+        const [a, b] = this.weightedPick(2, fitness)
         return this.mate(currentCandidates[a], currentCandidates[b])
       }
     )
   }
 
-  private evaluateCandidates(candidates: readonly Candidate[]): [number, number[], number]{
-    const fitness = candidates.map(this.calculateFitness.bind(this))
-    let bestCandidateIndex = -1
-    let bestFitness = -1
-    let totalWeight = 0
-    fitness.forEach((fitness, i) => {
-      totalWeight += fitness
+  private evaluateCandidates(candidates: readonly Candidate[]): [number, number[]]{
+    const targetSequence = this.targetAaSequence()
 
-      if(fitness > bestFitness){
-        bestFitness = fitness
+    let bestCandidateIndex = -1
+    let bestCandidateScore = -1
+    let sumOfScores = 0
+    const scores = candidates.map((candidate, i) => {
+      const candidateSequence = candidate.aa()
+
+      const numberOfCorrectSymbols = this.countNumberOfMatches(targetSequence, candidateSequence)
+      const score = 2 ** numberOfCorrectSymbols
+      sumOfScores += score
+
+      if(bestCandidateScore < score){
+        bestCandidateScore = score
         bestCandidateIndex = i
       }
+
+      return score
     })
+    const fitness = scores.map((ithScore) => ithScore / sumOfScores)
 
-    return [bestCandidateIndex, fitness, totalWeight]
-  }
-
-  private calculateFitness(candidate: Candidate): number{
-    const targetSequence = this.targetAaSequence()
-    const candidateSequence = candidate.aa()
-
-    let numberOfCorrectSymbols = this.countNumberOfMatches(targetSequence, candidateSequence);
-
-    return (numberOfCorrectSymbols / targetSequence.length) ** 2
+    return [bestCandidateIndex, fitness]
   }
 
   private countNumberOfMatches(targetSequence: string, candidateSequence: string) {
@@ -133,18 +132,18 @@ export class App {
     return numberOfCorrectSymbols
   }
 
-  private weightedPick(numberOfPicks: number, weights: number[], totalWeight: number): number[]{
+  private weightedPick(numberOfPicks: number, normalisedWeights: number[]): number[]{
     return Array.from(
       {length: numberOfPicks},
       () => {
-        let target = Math.floor(Math.random() * totalWeight)
-        for(let i = 0; i < weights.length; ++i){
-          target -= weights[i]
+        let target = Math.random()
+        for(let i = 0; i < normalisedWeights.length; ++i){
+          target -= normalisedWeights[i]
           if(target <= 0){
             return i
           }
         }
-        throw new Error(`weighted pick failed unexpectedly for weights [${weights}]`)
+        throw new Error(`weighted pick failed unexpectedly for weights [${normalisedWeights}]`)
       }
     )
   }
