@@ -177,27 +177,16 @@ export class App {
 
   private mutateDnaSequence(dna: string): string {
     const mutationRate = this.geneticAlgorithmConfig.mutationRate
-    const validSymbols = "ACTG"
 
     const resultSymbols: string[] = []
-    // for(let i = 2; i < dna.length; i += 3){
-    //   if(Math.random() <= mutationRate){
-    //     resultSymbols.push(this.sequenceRandomiser.randomTranslatableDna())
-    //   } else {
-    //     const originalTriplet = [dna[i-2], dna[i-1], dna[i]].join('')
-    //     resultSymbols.push(originalTriplet)
-    //   }
-    // }
-
-    for(const original of dna){
+    for(let i = 2; i < dna.length; i += 3){
       if(Math.random() <= mutationRate){
-        const randomSymbol = validSymbols[Math.floor(Math.random() * validSymbols.length)]
-        resultSymbols.push(randomSymbol)
+        resultSymbols.push(this.sequenceRandomiser.randomTranslatableDna(3))
       } else {
-        resultSymbols.push(original)
+        const originalTriplet = [dna[i-2], dna[i-1], dna[i]].join('')
+        resultSymbols.push(originalTriplet)
       }
     }
-
 
     return resultSymbols.join('')
   }
