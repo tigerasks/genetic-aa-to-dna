@@ -1,0 +1,64 @@
+<div class="best-candidate">
+  <div class="header">
+    <h3>Generation {{candidateGeneration()}}</h3>
+    @if (doesCharacterMatch(); as matches) {
+      <div class="match-percentage">
+        {{matchPercentage()}}% match
+      </div>
+    } @else {
+      <div class="match-percentage error">Length mismatch</div>
+    }
+  </div>
+
+  <div class="sequences">
+    <!-- Target AA Sequence -->
+    <div class="sequence-row">
+      <label>Target AA:</label>
+      <div class="sequence">
+        @if (targetAaSequence()) {
+          @for (char of targetAaSequence(); track $index) {
+            <span class="char target">{{char}}</span>
+          }
+        } @else {
+          <span class="empty">No target sequence</span>
+        }
+      </div>
+    </div>
+
+    <!-- Candidate AA Sequence -->
+    <div class="sequence-row">
+      <label>Candidate AA:</label>
+      <div class="sequence">
+        @if (individualCandidateAaSymbols(); as symbols) {
+          @if (doesCharacterMatch(); as matches) {
+            @for (symbol of symbols; track $index; let i = $index) {
+              <span class="char" [class.mismatch]="!matches[i]" [class.match]="matches[i]">
+                {{symbol}}
+              </span>
+            }
+          }
+        } @else {
+          <span class="empty">No candidate sequence</span>
+        }
+      </div>
+    </div>
+
+    <!-- Candidate DNA Sequence -->
+    <div class="sequence-row">
+      <label>Candidate DNA:</label>
+      <div class="sequence dna">
+        @if (individualCandidateDnaTriplets(); as triplets) {
+          @if (doesCharacterMatch(); as matches) {
+            @for (triplet of triplets; track $index; let i = $index) {
+              <span class="triplet" [class.mismatch]="!matches[i]" [class.match]="matches[i]">
+                {{triplet}}
+              </span>
+            }
+          }
+        } @else {
+          <span class="empty">No DNA sequence</span>
+        }
+      </div>
+    </div>
+  </div>
+</div>

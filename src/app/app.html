@@ -6,6 +6,14 @@
       (onStop)="stopIteration()"
       (onTargetSequenceChanged)="targetAaSequence.set($event)"
     />
+    @if (bestCandidate(); as candidate) {
+      <app-best-candidate
+        [candidateGeneration]="currentGenerationNumber()"
+        [candidateDnaSequence]="candidate.dna()"
+        [candidateAaSequence]="candidate.aa()"
+        [targetAaSequence]="targetAaSequence()"
+      />
+    }
     <app-population-display [populationSequences]="currentPopulationSequences()"/>
   </div>
 </main>

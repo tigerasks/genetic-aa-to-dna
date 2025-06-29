@@ -5,10 +5,11 @@ import {SequenceRandomiser} from '../sequence-handling/sequence-randomiser';
 import {GeneticAlgorithmConfig} from '../app-config/genetic-algorithm-config';
 import {PopulationDisplay} from '../population-display/population-display';
 import {ActionBar} from '../action-bar/action-bar';
+import {BestCandidate} from '../best-candidate/best-candidate';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, PopulationDisplay, ActionBar],
+  imports: [RouterOutlet, PopulationDisplay, ActionBar, BestCandidate],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
@@ -24,6 +25,7 @@ export class App {
   private isAbortRequested = false
 
   private population = viewChild(PopulationDisplay)
+  protected bestCandidate = signal<Candidate | null>( null )
 
   constructor(
     private geneticAlgorithmConfig: GeneticAlgorithmConfig,
@@ -81,7 +83,7 @@ export class App {
     const [bestCandidateIndex, fitness] = this.evaluateCandidates(currentCandidates)
     this.currentEpsilon.set(fitness[bestCandidateIndex])
 
-    //TODO: display best candidate
+    this.bestCandidate.set(currentCandidates[bestCandidateIndex])
 
     return Array.from(
       { length: this.geneticAlgorithmConfig.populationSize },
