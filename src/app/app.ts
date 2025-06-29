@@ -18,6 +18,7 @@ export class App {
   protected currentPopulationSequences = signal<string[]>([])
 
   protected targetAaSequence = signal<string>('')
+  private targetDnaLength = computed(() => this.targetAaSequence().length * 3)
   private currentEpsilon = signal<number>(0.0)
 
   private isAbortRequested = false
@@ -58,7 +59,7 @@ export class App {
     this.currentPopulationSequences.set(
       Array.from(
         { length: this.geneticAlgorithmConfig.populationSize },
-        () => this.sequenceRandomiser.randomTranslatableDna()
+        () => this.sequenceRandomiser.randomTranslatableDna(this.targetDnaLength())
       )
     )
     this.currentGenerationNumber.set(1)
@@ -142,6 +143,6 @@ export class App {
   }
 
   private mate(parentA: Candidate, parentB: Candidate): string {
-    return this.sequenceRandomiser.randomTranslatableDna() //TODO
+    return this.sequenceRandomiser.randomTranslatableDna(this.targetDnaLength()) //TODO
   }
 }
