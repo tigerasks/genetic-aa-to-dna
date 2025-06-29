@@ -1,0 +1,25 @@
+:host{ /* targets <app-population-display> element itself*/
+  display: flex;
+  flex: 1;
+  min-height: 0; /* allow children to shrink*/
+}
+
+.population-display {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+
+  flex: 1;
+  width: 100%;
+  overflow-y: auto;
+}
+
+.candidate-list {
+  display: block;
+}
+
+.candidate-list > app-candidate {
+  display: block; /* custom Angular components by default have display: inline behaviour, which ignores vertical margin*/
+  margin-bottom: 0.7rem;
+}

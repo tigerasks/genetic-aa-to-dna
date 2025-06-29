@@ -1,0 +1,7 @@
+<div class="population-display">
+  <div class="candidate-list">
+    @for (sequence of populationSequences(); track $index) {
+      <app-candidate [dna]="sequence"></app-candidate>
+    }
+  </div>
+</div>

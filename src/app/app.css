@@ -1,0 +1,16 @@
+main {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.content {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.content > button {
+  flex-shrink: 0;
+  padding: 1rem;
+}

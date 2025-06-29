@@ -1,5 +1,8 @@
 <main>
-  <app-candidate dna="{{this.randomDna()}}"/>
+  <div class="content">
+    <button (click)="onStart()">Generate Candidates</button>
+    <app-population-display [populationSequences]="currentPopulation()"/>
+  </div>
 </main>
 
 <router-outlet />
