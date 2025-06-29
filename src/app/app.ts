@@ -35,6 +35,11 @@ export class App {
   }
 
   protected async startIteration(){
+    if(this.targetAaSequence() === ''){
+      throw new Error('Iteration on empty target is pointless.')
+    }
+    const waitForNextFrame = () => new Promise(resolve => requestAnimationFrame(resolve))
+
     this.isRunning.set(true)
     this.initialisePopulation()
 
@@ -42,8 +47,6 @@ export class App {
       !this.isAbortRequested
       && i < this.geneticAlgorithmConfig.maxGenerationSafeguard
       && this.currentEpsilon() < this.geneticAlgorithmConfig.minEpsilon
-
-    const waitForNextFrame = () => new Promise(resolve => requestAnimationFrame(resolve))
 
     for(let i = 2; isComputationOngoing(i); ++i){
       this.currentGenerationNumber.set(i)
@@ -67,8 +70,8 @@ export class App {
 
   private breedNextGeneration(): string[]{
     const currentCandidates = this.population()?.candidates()
-    if(!currentCandidates){
-      throw new Error('No candidates found')
+    if(!currentCandidates || currentCandidates.length < 1){
+      throw new Error(`Insufficient candidates found: ${currentCandidates?.length}`)
     }
 
     const [bestCandidateIndex, fitness, totalFitnessWeight] = this.evaluateCandidates(currentCandidates)
@@ -137,7 +140,7 @@ export class App {
             return i
           }
         }
-        throw new Error(`weighted pick failed unexpectedly for weights ${weights}`)
+        throw new Error(`weighted pick failed unexpectedly for weights [${weights}]`)
       }
     )
   }
