@@ -1,4 +1,5 @@
 import {Component, computed, input, signal} from '@angular/core';
+import {BestCandidateData} from './best-candidate.model';
 
 @Component({
   selector: 'app-best-candidate',
@@ -8,13 +9,19 @@ import {Component, computed, input, signal} from '@angular/core';
 })
 export class BestCandidate {
   candidateGeneration = input.required<number>()
-  targetAaSequence = input.required<string>()
-  candidateDnaSequence =input.required<string>()
-  candidateAaSequence = input.required<string>()
+  data = input<BestCandidateData>()
+  protected targetAaSequence = computed(() => this.data()?.targetAaSequence)
+  protected candidateDnaSequence = computed(() => this.data()?.candidateDnaSequence)
+  protected candidateAaSequence = computed(() => this.data()?.candidateAaSequence)
 
   protected doesCharacterMatch = computed<boolean[] | null>(() => {
-    const targetAa = this.targetAaSequence()
-    const candidateAa = this.candidateAaSequence()
+    const data = this.data()
+    if(!data){
+      return null
+    }
+
+    const targetAa = data.targetAaSequence
+    const candidateAa = data.candidateAaSequence
 
     if(targetAa.length !== candidateAa.length){
       return null
@@ -43,21 +50,29 @@ export class BestCandidate {
   })
 
   protected individualCandidateAaSymbols = computed<string[] | null>(() => {
+    const data = this.data()
+    if(!data){
+      return null
+    }
     if(this.doesCharacterMatch() === null){
       return null
     }
-    if(this.candidateAaSequence() === ''){
+    if(data.candidateAaSequence === ''){
       return []
     }
 
-    return [...this.candidateAaSequence()]
+    return [...data.candidateAaSequence]
   })
 
   protected individualCandidateDnaTriplets = computed<string[] | null>(() => {
+    const data = this.data()
+    if(!data){
+      return null
+    }
     if(this.doesCharacterMatch() === null){
       return null
     }
-    const candidateDna = this.candidateDnaSequence()
+    const candidateDna = data.candidateDnaSequence
     if(candidateDna.length %3 !== 0){
       throw new Error(`Expected DNA sequence length to be a multiple of 3, but was ${candidateDna.length}`)
     }

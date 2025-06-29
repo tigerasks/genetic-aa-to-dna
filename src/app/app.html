@@ -9,9 +9,7 @@
     @if (bestCandidate(); as candidate) {
       <app-best-candidate
         [candidateGeneration]="currentGenerationNumber()"
-        [candidateDnaSequence]="candidate.dna()"
-        [candidateAaSequence]="candidate.aa()"
-        [targetAaSequence]="targetAaSequence()"
+        [data]="candidate"
       />
     }
     <app-population-display [populationSequences]="currentPopulationSequences()"/>

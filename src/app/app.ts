@@ -1,4 +1,4 @@
-import {Component, computed, input, QueryList, signal, viewChild, ViewChildren} from '@angular/core';
+import {Component, computed,signal, viewChild} from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import {Candidate} from '../candidate/candidate';
 import {SequenceRandomiser} from '../sequence-handling/sequence-randomiser';
@@ -6,7 +6,7 @@ import {GeneticAlgorithmConfig} from '../app-config/genetic-algorithm-config';
 import {PopulationDisplay} from '../population-display/population-display';
 import {ActionBar} from '../action-bar/action-bar';
 import {BestCandidate} from '../best-candidate/best-candidate';
-import {appConfig} from './app.config';
+import {BestCandidateData} from '../best-candidate/best-candidate.model';
 
 @Component({
   selector: 'app-root',
@@ -26,7 +26,7 @@ export class App {
   private isAbortRequested = false
 
   private population = viewChild(PopulationDisplay)
-  protected bestCandidate = signal<Candidate | null>( null )
+  protected bestCandidate = signal<BestCandidateData | null>( null )
 
   constructor(
     private geneticAlgorithmConfig: GeneticAlgorithmConfig,
@@ -58,7 +58,6 @@ export class App {
         && this.currentEpsilon() < this.geneticAlgorithmConfig.minEpsilon
 
       for(let i = 2; isComputationOngoing(i); ++i){
-        console.log(`generation ${this.currentGenerationNumber()}: epsilon = ${this.currentEpsilon()}`)
         this.currentGenerationNumber.set(i)
         this.currentPopulationSequences.set(this.breedNextGeneration())
         await waitForNextFrame()
@@ -86,7 +85,14 @@ export class App {
 
     const [bestCandidateIndex, fitness, epsilon] = this.evaluateCandidates(currentCandidates)
     this.currentEpsilon.set(epsilon)
-    this.bestCandidate.set(currentCandidates[bestCandidateIndex])
+
+    const bestCandidate = currentCandidates[bestCandidateIndex]
+    this.bestCandidate.set(
+      new BestCandidateData(
+        this.targetAaSequence(),
+        bestCandidate.aa(),
+        bestCandidate.dna(),
+    ))
 
     return Array.from(
       { length: this.geneticAlgorithmConfig.populationSize },
