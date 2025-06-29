@@ -40,6 +40,9 @@ export class ActionBar {
 
   protected translateRandomDna(){
     this.targetAaSequence.set(this.sequenceRandomiser.randomAaSequence())
-    this.onStart.emit()
+    setTimeout(() => //allow update of aa sequence to propagate before we emit start
+      this.onStart.emit(),
+      0
+    )
   }
 }
