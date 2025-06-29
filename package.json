@@ -6,7 +6,9 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "github-build": "ng build --configuration production --base-href 'https://tigerasks.github.io/genetic-aa-to-dna/'",
+    "github-deploy": "npx angular-cli-ghpages --dir=dist/aa-to-dna/browser --no-silent"
   },
   "prettier": {
     "overrides": [
