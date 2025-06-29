@@ -1,6 +1,10 @@
 <main>
   <div class="content">
-    <button (click)="onStart()">Generate Candidates</button>
+    @if (isRunning()) {
+      <button (click)="onStop()">Stop at Generation {{currentGenerationNumber()}}</button>
+    } @else {
+      <button (click)="onStart()">Generate Candidates</button>
+    }
     <app-population-display [populationSequences]="currentPopulation()"/>
   </div>
 </main>
