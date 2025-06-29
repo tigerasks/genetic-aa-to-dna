@@ -149,6 +149,18 @@ export class App {
   }
 
   private mate(parentA: Candidate, parentB: Candidate): string {
-    return this.sequenceRandomiser.randomTranslatableDna(this.targetDnaLength()) //TODO
+    const dnaA = parentA.dna()
+    const dnaB = parentB.dna()
+
+    if(dnaA.length !== dnaB.length){
+      throw new Error(`Expected parent B to have same length DNA as parent A (${dnaA.length}) but was ${dnaB.length}`)
+    }
+
+    const midpoint = Math.floor(Math.random() * dnaA.length)
+    const childSequence = dnaA.substring(0, midpoint) + dnaB.substring(midpoint)
+
+    //TODO: mutate
+
+    return childSequence
   }
 }
