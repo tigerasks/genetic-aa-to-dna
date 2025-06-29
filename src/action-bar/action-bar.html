@@ -1,0 +1,5 @@
+@if (isComputationRunning()) {
+  <button (click)="stop()">Stop at current Generation</button>
+} @else {
+  <button (click)="start()">Generate Candidates</button>
+}

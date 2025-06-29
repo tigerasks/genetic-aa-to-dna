@@ -4,10 +4,11 @@ import {Candidate} from '../candidate/candidate';
 import {SequenceRandomiser} from '../sequence-handling/sequence-randomiser';
 import {GeneticAlgorithmConfig} from '../app-config/genetic-algorithm-config';
 import {PopulationDisplay} from '../population-display/population-display';
+import {ActionBar} from '../action-bar/action-bar';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, Candidate, PopulationDisplay],
+  imports: [RouterOutlet, PopulationDisplay, ActionBar],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
@@ -25,11 +26,11 @@ export class App {
     private sequenceRandomiser: SequenceRandomiser,
   ) {}
 
-  protected onStop() {
+  protected stopIteration() {
     this.isAbortRequested = true
   }
 
-  protected async onStart(){
+  protected async startIteration(){
     this.isRunning.set(true)
     this.initialisePopulation()
 
