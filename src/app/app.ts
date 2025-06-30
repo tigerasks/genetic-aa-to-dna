@@ -169,10 +169,18 @@ export class App {
       throw new Error(`Expected parent B to have same length DNA as parent A (${dnaA.length}) but was ${dnaB.length}`)
     }
 
-    const midpoint = Math.floor(Math.random() * dnaA.length)
-    const childSequence = dnaA.substring(0, midpoint) + dnaB.substring(midpoint)
+    const childSequence: String[] = []
+    for(let i = 2; i < dnaA.length; i += 3){
+      let pickedSequence: String
+      if(Math.random() < 0.5){
+        pickedSequence = dnaA
+      } else {
+        pickedSequence = dnaB
+      }
+      childSequence.push(pickedSequence[i-2], pickedSequence[i-1], pickedSequence[i])
+    }
 
-    return this.mutateDnaSequence(childSequence)
+    return this.mutateDnaSequence(childSequence.join(''))
   }
 
   private mutateDnaSequence(dna: string): string {
