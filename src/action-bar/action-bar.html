@@ -2,7 +2,8 @@
   <input
     class="target-aa"
     type="text"
-    [(ngModel)]="targetAaSequence"
+    [ngModel]="targetAaSequence()"
+    (ngModelChange)="targetAaSequence.set($event.toUpperCase())"
     placeholder="Enter target AA sequence"
   />
   @if (isComputationRunning()) {
