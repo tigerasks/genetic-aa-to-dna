@@ -46,7 +46,7 @@ export class BestCandidate {
     }
 
     const numberOfMatches = matchesByIndex.filter((it: boolean) => it).length
-    return numberOfMatches / matchesByIndex.length * 100
+    return parseFloat((numberOfMatches / matchesByIndex.length * 100).toFixed(2))
   })
 
   protected individualCandidateAaSymbols = computed<string[] | null>(() => {
