@@ -176,7 +176,8 @@ export class App {
   }
 
   private mutateDnaSequence(dna: string): string {
-    const mutationRate = this.geneticAlgorithmConfig.mutationRate
+    const stabilisingFactor = (this.currentGenerationNumber() * this.geneticAlgorithmConfig.stabilisationRate)
+    const mutationRate = this.geneticAlgorithmConfig.baseMutationRate / stabilisingFactor
 
     const resultSymbols: string[] = []
     for(let i = 2; i < dna.length; i += 3){
