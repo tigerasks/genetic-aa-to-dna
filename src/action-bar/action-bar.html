@@ -4,6 +4,7 @@
     type="text"
     [ngModel]="targetAaSequence()"
     (ngModelChange)="targetAaSequence.set($event.toUpperCase())"
+    [disabled]="isComputationRunning()"
     placeholder="Enter target AA sequence"
   />
   @if (isComputationRunning()) {
